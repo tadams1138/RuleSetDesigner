@@ -5,9 +5,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("RuleSetDesigner")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A resizable Windows Workflow Designer Dialog")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Tom Adams")]
 [assembly: AssemblyProduct("RuleSetDesigner")]
 [assembly: AssemblyCopyright("Copyright © Tom Adams 2018")]
 [assembly: AssemblyTrademark("")]

@@ -22,5 +22,17 @@ namespace RuleSetDesignerLauncher.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("^.+Context$")]
+        public string TypFilter {
+            get {
+                return ((string)(this["TypFilter"]));
+            }
+            set {
+                this["TypFilter"] = value;
+            }
+        }
     }
 }

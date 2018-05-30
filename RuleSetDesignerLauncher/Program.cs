@@ -12,6 +12,8 @@ namespace RuleSetDesignerLauncher
         [STAThread]
         static void Main(string[] args)
         {
+            AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += (sender, args1) => Assembly.ReflectionOnlyLoad(args1.Name);
+            AppDomain.CurrentDomain.AssemblyResolve += (sender, args1) => Assembly.Load(args1.Name);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(CreateLauncher(args));
@@ -19,8 +21,13 @@ namespace RuleSetDesignerLauncher
 
         private static Launcher CreateLauncher(IReadOnlyList<string> args)
         {
-            var launcher = args.Count == 2 ? new Launcher(args[0], args[1]) : new Launcher();
-            return launcher;
+            var retval = new Launcher();
+            if (args.Count == 1)
+            {
+                retval.SetRuleSetFileName(args[0]);
+            }
+
+            return retval;
         }
     }
 }

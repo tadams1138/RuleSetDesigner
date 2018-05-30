@@ -1,33 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using System.Workflow.Activities.Rules;
 using RuleSetDesigner;
+using RuleSetDesignerLauncher.Properties;
 
 namespace RuleSetDesignerLauncher
 {
     public partial class Launcher : Form
     {
+        private readonly string[] _assemblySearchPatterns = { "*.dll", "*.exe" };
         private List<System.Reflection.Assembly> _assemblies;
 
         public Launcher()
         {
             InitializeComponent();
             ActivityTypeAssembliesFolderBrowserDialog.SelectedPath = System.IO.Directory.GetCurrentDirectory();
-            RuleSetFileNameDialog.InitialDirectory = System.IO.Directory.GetCurrentDirectory();
+            RuleSetFileNameDialog.InitialDirectory = System.IO.Directory.GetCurrentDirectory();            
         }
 
-        public Launcher(string ruleSetFileName, string activityTypeAssemblyFolder) : this()
-        {
-            ActivityTypeAssembliesFolderBrowserDialog.SelectedPath = activityTypeAssemblyFolder;
-            RuleSetFileNameTextBox.Text = ruleSetFileName;
-        }
-
-        public string[] AssemblySearchPatterns = { "*.dll", "*.exe" };
-        
         #region UI Events
 
         private void ActivityTypesListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -83,6 +75,7 @@ namespace RuleSetDesignerLauncher
             try
             {
                 RefreshAssembliesList();
+                TypeFilterTextBox.Text = Settings.Default.TypFilter;
             }
             catch (Exception ex)
             {
@@ -128,10 +121,16 @@ namespace RuleSetDesignerLauncher
 
         #endregion
 
+        public void SetRuleSetFileName(string ruleSetFileName)
+        {
+            RuleSetFileNameTextBox.Text = ruleSetFileName;
+        }
+
         private void BrowseForActivityTypeAssemblies()
         {
             if (ActivityTypeAssembliesFolderBrowserDialog.ShowDialog(this) == DialogResult.OK)
             {
+                System.IO.Directory.SetCurrentDirectory(ActivityTypeAssembliesFolderBrowserDialog.SelectedPath);
                 RefreshAssembliesList();
             }
         }
@@ -144,8 +143,17 @@ namespace RuleSetDesignerLauncher
             }
         }
 
-        private RuleSetDialog GetDialog(Type activityType, RuleSet ruleSet)
+        private static System.Type GetActivityType(object item)
         {
+            var reflectionOnlyType = (System.Type) item;
+            var retval = Type.GetTypeFromReflectionOnlyType(reflectionOnlyType);
+            return retval;
+        }
+
+        private RuleSetDialog GetDialog()
+        {
+            var ruleSet = RuleSetGateway.GetRuleSet(RuleSetFileNameTextBox.Text);
+            var activityType = GetActivityType(ActivityTypesListBox.SelectedItem);
             var retval = new RuleSetDialog(activityType, null, ruleSet);
             retval.Save += DialogOnSave;
             return retval;
@@ -153,8 +161,7 @@ namespace RuleSetDesignerLauncher
 
         private void Launch()
         {
-            var ruleSet = RuleSetGateway.GetRuleSet(RuleSetFileNameTextBox.Text);
-            using (var dialog = GetDialog((Type)ActivityTypesListBox.SelectedItem, ruleSet))
+            using (var dialog = GetDialog())
             {
                 Hide();
                 dialog.ShowDialog(this);
@@ -165,8 +172,9 @@ namespace RuleSetDesignerLauncher
         private void RefreshActivityTypeList()
         {
             var regex = Regex.TryCreate(TypeFilterTextBox.Text, RegexOptions.IgnoreCase);
+            // ReSharper disable once AssignNullToNotNullAttribute
             var types = _assemblies.SelectMany(x => x.GetTypes())
-                .Where(x => x.IsClass && !x.IsAbstract && x.IsPublic && (regex?.IsMatch(x.Name) ?? false))
+                .Where(x => regex?.IsMatch(x.FullName) ?? false)
                 .Cast<object>().ToArray();
             ActivityTypesListBox.Items.Clear();
             if (types.Any())
@@ -179,8 +187,8 @@ namespace RuleSetDesignerLauncher
 
         private void RefreshAssembliesList()
         {
-            var files = Directory.GetFiles(ActivityTypeAssembliesFolderBrowserDialog.SelectedPath, AssemblySearchPatterns, SearchOption.AllDirectories);
-            _assemblies = files.Select(Assembly.TryLoadFile).Where(x => x != null).ToList();
+            var files = Directory.GetFiles(_assemblySearchPatterns);
+            _assemblies = files.Select(Assembly.TryReflectionOnlyLoadFrom).Where(x => x != null).ToList();
             RefreshActivityTypeList();
         }
 
