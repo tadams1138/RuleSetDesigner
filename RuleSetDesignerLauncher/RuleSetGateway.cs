@@ -11,14 +11,14 @@ namespace RuleSetDesignerLauncher
 
         public static RuleSet GetRuleSet(string name)
         {
-            if (File.Exists(name))
+            var fileText = GetFileText(name);
+            if (string.IsNullOrWhiteSpace(fileText))
             {
-                var fileText = File.ReadAllText(name);
-                var retval = Deserialize(fileText);
-                return retval;
+                return null;
             }
 
-            return null;
+            var retval = Deserialize(fileText);
+            return retval;
         }
 
         public static void SaveRuleSet(RuleSet ruleSet, string name)
@@ -35,6 +35,17 @@ namespace RuleSetDesignerLauncher
                 var retval = (RuleSet)WorkflowMarkupSerializer.Deserialize(xmlTextReader);
                 return retval;
             }
+        }
+
+        private static string GetFileText(string name)
+        {
+            if (File.Exists(name))
+            {
+                var retval = File.ReadAllText(name);
+                return retval;
+            }
+
+            return null;
         }
 
         private static string Serialize(RuleSet ruleSet)
