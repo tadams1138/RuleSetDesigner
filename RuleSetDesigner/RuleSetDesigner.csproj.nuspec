@@ -10,10 +10,10 @@
 		<projectUrl>https://github.com/tadams1138/RuleSetDesigner</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>A resizable Windows Workflow Designer Dialog</description>
-		<copyright>Copyright © Tom Adams 2018</copyright>
+		<copyright>Copyright Tom Adams 2018</copyright>
 		<dependencies />
 	</metadata>
 	<files>
-		<file src="bin\Release\RuleSetDesigner.dll" target="net40" />
+		<file src="bin\Release\RuleSetDesigner.dll" target="lib\net40" />
 	</files>
 </package>
