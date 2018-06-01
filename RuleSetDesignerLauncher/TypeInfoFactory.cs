@@ -11,7 +11,6 @@ namespace RuleSetDesignerLauncher
             var loaderDomain = AppDomainFactory.Create();
             try
             {
-                // ReSharper disable once AssignNullToNotNullAttribute
                 var factory = CreateInternalFactory(loaderDomain, filePaths);
                 loaderDomain.DoCallBack(factory.Get);
                 var retval = factory.Result;
@@ -46,7 +45,19 @@ namespace RuleSetDesignerLauncher
                     .Where(x => x != null).ToArray();
             }
 
-            private static System.Type[] TryGetTypes(System.Reflection.Assembly assembly)
+            private static TypeInfo TryGetTypeInfo(System.Type t, string fileName)
+            {
+                try
+                {
+                    return new TypeInfo {FullName = t.FullName, FilePath = fileName};
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+
+            private static IEnumerable<System.Type> TryGetTypes(System.Reflection.Assembly assembly)
             {
                 try
                 {
@@ -55,19 +66,6 @@ namespace RuleSetDesignerLauncher
                 catch
                 {
                     return new System.Type[] { };
-                }
-            }
-
-            private static TypeInfo TryGetTypeInfo(System.Type t, string fileName)
-            {
-                try
-                {
-                    var retval = new TypeInfo {FullName = t.FullName, FilePath = fileName};
-                    return retval;
-                }
-                catch
-                {
-                    return null;
                 }
             }
 
