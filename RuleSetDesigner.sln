@@ -3,19 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2005
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuleSetDesigner", "RuleSetDesigner\RuleSetDesigner.csproj", "{FD322937-B9F3-4E8D-A629-BF570E5DC260}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuleSetDesigner", "src\RuleSetDesigner\RuleSetDesigner.csproj", "{FD322937-B9F3-4E8D-A629-BF570E5DC260}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuleSetDesignerLauncher", "RuleSetDesignerLauncher\RuleSetDesignerLauncher.csproj", "{A3092BD0-CCAD-404C-B748-77DF6962A069}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuleSetDesignerLauncher", "src\RuleSetDesignerLauncher\RuleSetDesignerLauncher.csproj", "{A3092BD0-CCAD-404C-B748-77DF6962A069}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuleSetDesignerLauncher.Tests", "RuleSetDesignerLauncher.Tests\RuleSetDesignerLauncher.Tests.csproj", "{606F2B37-FFD1-4E0C-9295-3DC4E448CBF1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuleSetDesignerLauncher.Tests", "test\RuleSetDesignerLauncher.Tests\RuleSetDesignerLauncher.Tests.csproj", "{606F2B37-FFD1-4E0C-9295-3DC4E448CBF1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A3CB34ED-DDC3-4088-9360-7887ECAF8E1E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{54E1B7CB-6132-43D6-8882-79A09AB26E3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DummyAssembly", "DummyAssembly\DummyAssembly.csproj", "{86CB9C7B-14B3-4FBC-B6AD-EA7920C3896C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DummyAssembly", "test\DummyAssembly\DummyAssembly.csproj", "{86CB9C7B-14B3-4FBC-B6AD-EA7920C3896C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DummAssemblyDependency", "DummAssemblyDependency\DummAssemblyDependency.csproj", "{C8AC17B7-92DE-4497-B19D-25C525EBD808}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DummAssemblyDependency", "test\DummAssemblyDependency\DummAssemblyDependency.csproj", "{C8AC17B7-92DE-4497-B19D-25C525EBD808}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
