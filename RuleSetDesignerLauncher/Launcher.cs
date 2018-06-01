@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using RuleSetDesigner;
 using RuleSetDesignerLauncher.Properties;
 
 namespace RuleSetDesignerLauncher
@@ -11,13 +9,13 @@ namespace RuleSetDesignerLauncher
     public partial class Launcher : Form
     {
         private readonly string[] _assemblySearchPatterns = { "*.dll", "*.exe" };
-        private List<System.Reflection.Assembly> _assemblies;
+        private TypeInfo[] _typeInfo;
 
         public Launcher()
         {
             InitializeComponent();
             ActivityTypeAssembliesFolderBrowserDialog.SelectedPath = System.IO.Directory.GetCurrentDirectory();
-            RuleSetFileNameDialog.InitialDirectory = System.IO.Directory.GetCurrentDirectory();            
+            RuleSetFileNameDialog.InitialDirectory = System.IO.Directory.GetCurrentDirectory();
         }
 
         #region UI Events
@@ -46,18 +44,6 @@ namespace RuleSetDesignerLauncher
             }
         }
 
-        private void DialogOnSave(object sender, EventArgs e)
-        {
-            try
-            {
-                SaveRuleSet(sender);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
         private void LaunchButton_Click(object sender, EventArgs e)
         {
             try
@@ -74,13 +60,18 @@ namespace RuleSetDesignerLauncher
         {
             try
             {
-                RefreshAssembliesList();
+                ScanAssembliesForTypeInfo();
                 TypeFilterTextBox.Text = Settings.Default.TypFilter;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void RefreshButton_Click(object sender, EventArgs e)
+        {
+            ScanAssembliesForTypeInfo();
         }
 
         private void RuleSetFileNameBrowseButton_Click(object sender, EventArgs e)
@@ -126,12 +117,27 @@ namespace RuleSetDesignerLauncher
             RuleSetFileNameTextBox.Text = ruleSetFileName;
         }
 
+        private void ActivityTypesListBox_DoubleClick(object sender, EventArgs e)
+        {
+            try
+            {
+                if (CanLaunch())
+                {
+                    Launch();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
         private void BrowseForActivityTypeAssemblies()
         {
             if (ActivityTypeAssembliesFolderBrowserDialog.ShowDialog(this) == DialogResult.OK)
             {
                 System.IO.Directory.SetCurrentDirectory(ActivityTypeAssembliesFolderBrowserDialog.SelectedPath);
-                RefreshAssembliesList();
+                ScanAssembliesForTypeInfo();
             }
         }
 
@@ -143,29 +149,26 @@ namespace RuleSetDesignerLauncher
             }
         }
 
-        private static System.Type GetActivityType(object item)
+        private bool CanLaunch()
         {
-            var reflectionOnlyType = (System.Type) item;
-            var retval = Type.GetTypeFromReflectionOnlyType(reflectionOnlyType);
-            return retval;
-        }
-
-        private RuleSetDialog GetDialog()
-        {
-            var ruleSet = RuleSetGateway.GetRuleSet(RuleSetFileNameTextBox.Text);
-            var activityType = GetActivityType(ActivityTypesListBox.SelectedItem);
-            var retval = new RuleSetDialog(activityType, null, ruleSet);
-            retval.Save += DialogOnSave;
-            return retval;
+            return !string.IsNullOrWhiteSpace(RuleSetFileNameTextBox.Text) &&
+                   ActivityTypesListBox.SelectedItem != null;
         }
 
         private void Launch()
         {
-            using (var dialog = GetDialog())
+            var loaderDomain = AppDomainFactory.CreateWithShadowCopy();
+            try
             {
+                var dialog = RuleSetDialogFactory.Get(loaderDomain, (TypeInfo) ActivityTypesListBox.SelectedItem,
+                    RuleSetFileNameTextBox.Text);
                 Hide();
                 dialog.ShowDialog(this);
+            }
+            finally
+            {
                 Show();
+                AppDomain.Unload(loaderDomain);
             }
         }
 
@@ -173,8 +176,7 @@ namespace RuleSetDesignerLauncher
         {
             var regex = Regex.TryCreate(TypeFilterTextBox.Text, RegexOptions.IgnoreCase);
             // ReSharper disable once AssignNullToNotNullAttribute
-            var types = _assemblies.SelectMany(x => x.GetTypes())
-                .Where(x => regex?.IsMatch(x.FullName) ?? false)
+            var types = _typeInfo.Where(x => regex?.IsMatch(x.FullName) ?? false)
                 .Cast<object>().ToArray();
             ActivityTypesListBox.Items.Clear();
             if (types.Any())
@@ -185,23 +187,16 @@ namespace RuleSetDesignerLauncher
             RefreshLaunchEnabled();
         }
 
-        private void RefreshAssembliesList()
-        {
-            var files = Directory.GetFiles(_assemblySearchPatterns);
-            _assemblies = files.Select(Assembly.TryReflectionOnlyLoadFrom).Where(x => x != null).ToList();
-            RefreshActivityTypeList();
-        }
-
         private void RefreshLaunchEnabled()
         {
-            LaunchButton.Enabled = !string.IsNullOrWhiteSpace(RuleSetFileNameTextBox.Text) &&
-                                 ActivityTypesListBox.SelectedItem != null;
+            LaunchButton.Enabled = CanLaunch();
         }
 
-        private void SaveRuleSet(object sender)
+        private void ScanAssembliesForTypeInfo()
         {
-            var dialog = (RuleSetDialog)sender;
-            RuleSetGateway.SaveRuleSet(dialog.RuleSet, RuleSetFileNameTextBox.Text);
+            var files = Directory.GetFiles(_assemblySearchPatterns).ToList();
+            _typeInfo = TypeInfoFactory.Get(files);
+            RefreshActivityTypeList();
         }
     }
 }

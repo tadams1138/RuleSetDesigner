@@ -5,18 +5,6 @@ namespace RuleSetDesignerLauncher
 {
     internal static class Assembly
     {
-        public static System.Reflection.Assembly TryReflectionOnlyLoadFrom(string file)
-        {
-            try
-            {
-                return System.Reflection.Assembly.ReflectionOnlyLoadFrom(file);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
         public static System.Reflection.Assembly Load(string assemblyName)
         {
             var assemblyFileName = GetLibraryName(assemblyName);

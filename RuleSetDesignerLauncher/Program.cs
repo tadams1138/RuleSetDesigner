@@ -12,8 +12,6 @@ namespace RuleSetDesignerLauncher
         [STAThread]
         static void Main(string[] args)
         {
-            AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += (sender, args1) => Assembly.ReflectionOnlyLoad(args1.Name);
-            AppDomain.CurrentDomain.AssemblyResolve += (sender, args1) => Assembly.Load(args1.Name);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(CreateLauncher(args));

@@ -38,6 +38,7 @@
             this.RuleSetFileNameDialog = new System.Windows.Forms.OpenFileDialog();
             this.ActivityTypeAssembliesFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.TypeFilterLabel = new System.Windows.Forms.Label();
+            this.RefreshButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // LaunchButton
@@ -57,7 +58,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.TypeFilterTextBox.Location = new System.Drawing.Point(12, 77);
             this.TypeFilterTextBox.Name = "TypeFilterTextBox";
-            this.TypeFilterTextBox.Size = new System.Drawing.Size(361, 20);
+            this.TypeFilterTextBox.Size = new System.Drawing.Size(280, 20);
             this.TypeFilterTextBox.TabIndex = 2;
             this.TypeFilterTextBox.Text = "Context";
             this.TypeFilterTextBox.TextChanged += new System.EventHandler(this.TypeFilterTextBox_TextChanged);
@@ -84,6 +85,7 @@
             this.ActivityTypesListBox.Size = new System.Drawing.Size(442, 147);
             this.ActivityTypesListBox.TabIndex = 4;
             this.ActivityTypesListBox.SelectedIndexChanged += new System.EventHandler(this.ActivityTypesListBox_SelectedIndexChanged);
+            this.ActivityTypesListBox.DoubleClick += new System.EventHandler(this.ActivityTypesListBox_DoubleClick);
             // 
             // BrowseForActivityTypeAssembliesButton
             // 
@@ -137,11 +139,23 @@
             this.TypeFilterLabel.TabIndex = 8;
             this.TypeFilterLabel.Text = "Type Filter:";
             // 
+            // RefreshButton
+            // 
+            this.RefreshButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.RefreshButton.Location = new System.Drawing.Point(298, 74);
+            this.RefreshButton.Name = "RefreshButton";
+            this.RefreshButton.Size = new System.Drawing.Size(75, 23);
+            this.RefreshButton.TabIndex = 9;
+            this.RefreshButton.Text = "Refresh";
+            this.RefreshButton.UseVisualStyleBackColor = true;
+            this.RefreshButton.Click += new System.EventHandler(this.RefreshButton_Click);
+            // 
             // Launcher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(466, 290);
+            this.Controls.Add(this.RefreshButton);
             this.Controls.Add(this.TypeFilterLabel);
             this.Controls.Add(this.RuleSetFileNameLabel);
             this.Controls.Add(this.RuleSetFileNameTextBox);
@@ -169,6 +183,7 @@
         private System.Windows.Forms.OpenFileDialog RuleSetFileNameDialog;
         private System.Windows.Forms.FolderBrowserDialog ActivityTypeAssembliesFolderBrowserDialog;
         private System.Windows.Forms.Label TypeFilterLabel;
+        private System.Windows.Forms.Button RefreshButton;
     }
 }
 

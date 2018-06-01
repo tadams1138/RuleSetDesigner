@@ -127,7 +127,7 @@ namespace RuleSetDesigner
             // conditionTextBox
             //
             conditionTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
-            conditionTextBox.Location = new Point(7, 16);
+            conditionTextBox.Location = new Point(7, 17);
             //
             // elseLabel
             //
@@ -136,7 +136,7 @@ namespace RuleSetDesigner
             // elseTextBox
             //
             elseTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
-            elseTextBox.Location = new Point(7, 16);
+            elseTextBox.Location = new Point(7, 17);
             //
             // elsePanel
             //
@@ -240,7 +240,7 @@ namespace RuleSetDesigner
             // thenTextBox
             //
             thenTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
-            thenTextBox.Location = new Point(7, 16);
+            thenTextBox.Location = new Point(7, 17);
             //
             // RuleSetDialog
             //
