@@ -12,6 +12,8 @@ namespace RuleSetDesignerLauncher
         [STAThread]
         static void Main(string[] args)
         {
+            AppDomain.CurrentDomain.UnhandledException +=
+                (sender, eventArgs) => MessageBox.Show(eventArgs.ExceptionObject.ToString());
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(CreateLauncher(args));

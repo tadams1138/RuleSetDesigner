@@ -8,7 +8,7 @@ namespace RuleSetDesignerLauncher
 {
     public partial class Launcher : Form
     {
-        private readonly string[] _assemblySearchPatterns = { "*.dll", "*.exe" };
+        private readonly string[] _assemblySearchPatterns = {"*.dll", "*.exe"};
         private TypeInfo[] _typeInfo;
 
         public Launcher()
@@ -160,14 +160,24 @@ namespace RuleSetDesignerLauncher
             var loaderDomain = AppDomainFactory.CreateWithShadowCopy();
             try
             {
-                var dialog = RuleSetDialogFactory.Get(loaderDomain, (TypeInfo) ActivityTypesListBox.SelectedItem,
-                    RuleSetFileNameTextBox.Text);
-                Hide();
-                dialog.ShowDialog(this);
+                using (var dialog = RuleSetDialogFactory.Get(loaderDomain, (TypeInfo) ActivityTypesListBox.SelectedItem,
+                    RuleSetFileNameTextBox.Text))
+                {
+                    Hide();
+                    dialog.ShowDialog();
+                }
             }
             finally
             {
-                Show();
+                try
+                {
+                    Show();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+
                 AppDomain.Unload(loaderDomain);
             }
         }
@@ -184,6 +194,7 @@ namespace RuleSetDesignerLauncher
                 ActivityTypesListBox.Items.AddRange(types);
                 ActivityTypesListBox.SelectedIndex = 0;
             }
+
             RefreshLaunchEnabled();
         }
 
